@@ -185,7 +185,6 @@ MemoryTranslateUserToSystem (PCB *pcb, uint32 addr)
     }
     dbprintf('p', "exit memorytranslateusertosystem\n");
     return ((page[L2_Index] & MEMORY_PTE_MASK) + offset);
-    //return ((*(page) & MEMORY_PTE_MASK) + offset);
 }
 
 //----------------------------------------------------------------------
