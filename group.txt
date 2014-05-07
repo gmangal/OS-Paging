@@ -1,0 +1,5 @@
+CS452- LAB2
+Team Members:
+   NAME             CS-LOGIN      EMAIL
+1. Gaurav Mangal    gmangal       gmangal@email.arizona.edu
+2. Kate Maroney     katemaroney   katemaroney@email.arizona.edu
