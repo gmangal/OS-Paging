@@ -108,7 +108,7 @@ ProcessFreeResources (PCB *pcb)
   // table, but could get more complex with two-level page tables.
 
 //------------------------------------------
-// TODO: You may change the code below
+// You may change the code below
 //------------------------------------------
 
   for (i = 0; i < L1_MAX_ENTRIES; i++) {

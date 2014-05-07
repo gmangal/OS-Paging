@@ -104,7 +104,7 @@ void
 ProcessFreeResources (PCB *pcb)
 {
   int		i, j;
-  int		npages;
+  uint32   *page;
 
   QueueInsertLast (&freepcbs, &pcb->l);
   // Free the process's memory.  This is easy with a one-level page
@@ -114,16 +114,22 @@ ProcessFreeResources (PCB *pcb)
 // You may change the code below
 //------------------------------------------
 
-  npages = pcb->npages;
   for (i = 0; i < L1_MAX_ENTRIES; i++) {
-      if (!(pcb->pagetable[i]))
+      page = (uint32 *) (pcb->pagetable[i]);
+      if (!page)
           continue;
       for (j = 0; j < L2_MAX_ENTRIES; j++) {
-          MemoryFreePte(((uint32 *)(pcb->pagetable[i]))[j]);
+          if (page[j]){
+              // TODO: fix the arguments for virtual base address and physical 
+              // page number
+              printf("Process ID: %d, virtual page base address: 0x%x, Freeing physical page number: %d\n", (unsigned) (pcb - pcbs), i * MEMORY_PAGE_SIZE + j * MEMORY_PAGE_SIZE, j);
+              MemoryFreePte(((uint32 *)(pcb->pagetable[i]))[j]);
+          }
       }
       MemoryFreePte (pcb->pagetable[i]);
   }
 
+  pcb->npages = 0;
   // Free the page allocated for the system stack
   MemoryFreePage (pcb->sysStackArea / MEMORY_PAGE_SIZE);
   ProcessSetStatus (pcb, PROCESS_STATUS_FREE);
