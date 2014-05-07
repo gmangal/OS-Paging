@@ -174,13 +174,18 @@ MemoryTranslateUserToSystem (PCB *pcb, uint32 addr)
 
     dbprintf('p', "enter memorytranslateusertosystem\n");
 
-    if (L1_Index >= L1_MAX_ENTRIES || L2_Index >= L2_MAX_ENTRIES){
+    if (L1_Index >= L1_MAX_ENTRIES || L2_Index >= L2_MAX_ENTRIES 
+            || pcb->pagetable[L1_Index] == 0){
         return (0);
     }
+
     page = (uint32 *)(pcb->pagetable[L1_Index] & MEMORY_PTE_MASK);
-    page = page + L2_Index;
+    if (page[L2_Index] == 0) {
+        return 0;
+    }
     dbprintf('p', "exit memorytranslateusertosystem\n");
-    return ((*(page) & MEMORY_PTE_MASK) + offset);
+    return ((page[L2_Index] & MEMORY_PTE_MASK) + offset);
+    //return ((*(page) & MEMORY_PTE_MASK) + offset);
 }
 
 //----------------------------------------------------------------------

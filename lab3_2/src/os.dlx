@@ -1,7 +1,7 @@
 ; Linked by DLX-LD.
 ; MemSize 94208
 ; Data size: 36708
-; Text size: 42932
+; Text size: 42968
 ; Stack size: 8192
 .text 0x1000
 .data 0xc000
@@ -2990,11 +2990,11 @@ _MemoryTranslateUserToSystem:
 	sw	20(r29),r7
 	lw	r6,(r30)
 	lw	r1,4(r30)
-	srli	r3,r1,#0x13
+	srli	r4,r1,#0x13
 	lhi	r7,#7
 	addui	r7,r7,#65535
 	and	r2,r1,r7
-	srli	r4,r2,#0xd
+	srli	r3,r2,#0xd
 	andi	r5,r1,#8191
 	addi	r29,r29,#-8
 	lhi	r2,((_debugstr)>>16)&0xffff
@@ -3027,47 +3027,54 @@ L138_LF3:
 	nop; not filled.
 	addi	r29,r29,#8
 L137_LF3:
-	sgti	r1,r3,#31
-	bnez	r1,L140_LF3
+	sgti	r1,r4,#31
+	bnez	r1,L145_LF3
 	nop; not filled.
-	sgti	r1,r4,#63
-	beqz	r1,L139_LF3
+	sgti	r1,r3,#63
+	bnez	r1,L145_LF3
 	nop; not filled.
-L140_LF3:
-	addi	r1,r0,#0
-	j	L143_LF3
-	nop; not filled.
-L139_LF3:
-	slli	r1,r3,#0x2
-	add	r1,r1,r6
-	lw	r1,96(r1)
-	addi	r7,r0,#-8
-	and	r2,r1,r7
 	slli	r1,r4,#0x2
-	add	r2,r2,r1
+	add	r1,r1,r6
+	lw	r31,96(r1)
+	snei	r1,r31,#0
+	beqz	r1,L145_LF3
+	nop; not filled.
+	addi	r7,r0,#-8
+	and	r4,r31,r7
+	slli	r1,r3,#0x2
+	add	r1,r1,r4
+	lw	r1,(r1)
+	snei	r1,r1,#0
+	bnez	r1,L141_LF3
+	nop; not filled.
+L145_LF3:
+	addi	r1,r0,#0
+	j	L144_LF3
+	nop; not filled.
+L141_LF3:
 	addi	r29,r29,#-8
-	lhi	r3,((_debugstr)>>16)&0xffff
-	addui	r3,r3,(_debugstr)&0xffff
-	sw	(r29),r3
+	lhi	r2,((_debugstr)>>16)&0xffff
+	addui	r2,r2,(_debugstr)&0xffff
+	sw	(r29),r2
 	addi	r7,r0,#112
 	sw	4(r29),r7
 	jal	_dindex
 	nop; not filled.
 	addi	r29,r29,#8
 	snei	r1,r1,#0
-	bnez	r1,L142_LF3
+	bnez	r1,L143_LF3
 	nop; not filled.
 	addi	r29,r29,#-8
-	sw	(r29),r3
+	sw	(r29),r2
 	addi	r7,r0,#43
 	sw	4(r29),r7
 	jal	_dindex
 	nop; not filled.
 	addi	r29,r29,#8
 	snei	r1,r1,#0
-	beqz	r1,L141_LF3
+	beqz	r1,L142_LF3
 	nop; not filled.
-L142_LF3:
+L143_LF3:
 	addi	r29,r29,#-8
 	lhi	r7,((LC9_LF3)>>16)&0xffff
 	addui	r7,r7,(LC9_LF3)&0xffff
@@ -3075,12 +3082,14 @@ L142_LF3:
 	jal	_printf
 	nop; not filled.
 	addi	r29,r29,#8
-L141_LF3:
-	lw	r1,(r2)
+L142_LF3:
+	slli	r1,r3,#0x2
+	add	r1,r1,r4
+	lw	r1,(r1)
 	addi	r7,r0,#-8
 	and	r1,r1,r7
 	add	r1,r1,r5
-L143_LF3:
+L144_LF3:
 	lw	r2,0(r29)
 	lw	r3,4(r29)
 	lw	r4,8(r29)
@@ -3115,10 +3124,10 @@ _MemoryCopySystemToUser:
 	lw	r3,12(r30)
 	addi	r6,r0,#0
 	sgti	r1,r3,#0
-	beqz	r1,L166_LF3
+	beqz	r1,L168_LF3
 	nop; not filled.
 	addi	r7,r0,#8192
-L167_LF3:
+L169_LF3:
 	addi	r29,r29,#-8
 	sw	(r29),r8
 	sw	4(r29),r4
@@ -3127,15 +3136,15 @@ L167_LF3:
 	add	r31,r0,r1
 	addi	r29,r29,#8
 	snei	r1,r31,#0
-	beqz	r1,L166_LF3
+	beqz	r1,L168_LF3
 	nop; not filled.
 	andi	r1,r31,#8191
 	sub	r2,r7,r1
 	sgt	r1,r2,r3
-	beqz	r1,L169_LF3
+	beqz	r1,L171_LF3
 	nop; not filled.
 	add	r2,r0,r3
-L169_LF3:
+L171_LF3:
 	addi	r29,r29,#-16
 	sw	(r29),r5
 	sw	4(r29),r31
@@ -3148,9 +3157,9 @@ L169_LF3:
 	add	r5,r5,r2
 	add	r4,r4,r2
 	sgti	r1,r3,#0
-	bnez	r1,L167_LF3
+	bnez	r1,L169_LF3
 	nop; not filled.
-L166_LF3:
+L168_LF3:
 	add	r1,r0,r6
 	lw	r2,0(r29)
 	lw	r3,4(r29)
@@ -3187,10 +3196,10 @@ _MemoryCopyUserToSystem:
 	lw	r3,12(r30)
 	addi	r6,r0,#0
 	sgti	r1,r3,#0
-	beqz	r1,L186_LF3
+	beqz	r1,L188_LF3
 	nop; not filled.
 	addi	r7,r0,#8192
-L187_LF3:
+L189_LF3:
 	addi	r29,r29,#-8
 	sw	(r29),r8
 	sw	4(r29),r4
@@ -3199,15 +3208,15 @@ L187_LF3:
 	add	r31,r0,r1
 	addi	r29,r29,#8
 	snei	r1,r31,#0
-	beqz	r1,L186_LF3
+	beqz	r1,L188_LF3
 	nop; not filled.
 	andi	r1,r31,#8191
 	sub	r2,r7,r1
 	sgt	r1,r2,r3
-	beqz	r1,L190_LF3
+	beqz	r1,L192_LF3
 	nop; not filled.
 	add	r2,r0,r3
-L190_LF3:
+L192_LF3:
 	addi	r29,r29,#-16
 	sw	(r29),r31
 	sw	4(r29),r5
@@ -3220,9 +3229,9 @@ L190_LF3:
 	add	r5,r5,r2
 	add	r4,r4,r2
 	sgti	r1,r3,#0
-	bnez	r1,L187_LF3
+	bnez	r1,L189_LF3
 	nop; not filled.
-L186_LF3:
+L188_LF3:
 	add	r1,r0,r6
 	lw	r2,0(r29)
 	lw	r3,4(r29)
@@ -3323,30 +3332,30 @@ _MemoryGetOperandAddress:
 	srli	r1,r5,#0x1a
 	addi	r31,r1,#-32
 	sgtui	r1,r31,#15
-	bnez	r1,L207_LF3
+	bnez	r1,L209_LF3
 	nop; not filled.
 	lhi	r1,((_invalidOps61_LF3)>>16)&0xffff
 	addui	r1,r1,(_invalidOps61_LF3)&0xffff
 	lw	r1,(r1)
 	srl	r1,r1,r31
 	andi	r1,r1,#1
-	beqz	r1,L206_LF3
+	beqz	r1,L208_LF3
 	nop; not filled.
-L207_LF3:
+L209_LF3:
 	addi	r1,r0,#-1
-	j	L211_LF3
+	j	L213_LF3
 	nop; not filled.
-L206_LF3:
+L208_LF3:
 	srli	r1,r5,#0x15
 	andi	r6,r1,#31
 	andi	r31,r5,#0xffff
 	srli	r1,r31,#0xf
-	beqz	r1,L208_LF3
+	beqz	r1,L210_LF3
 	nop; not filled.
 	lhi	r7,#-1
 	addui	r7,r7,#0
 	or	r31,r31,r7
-L208_LF3:
+L210_LF3:
 	lw	r2,(r2)
 	slli	r1,r6,#0x2
 	add	r1,r1,r2
@@ -3362,7 +3371,7 @@ L208_LF3:
 	nop; not filled.
 	addi	r29,r29,#8
 	snei	r1,r1,#0
-	bnez	r1,L210_LF3
+	bnez	r1,L212_LF3
 	nop; not filled.
 	addi	r29,r29,#-8
 	sw	(r29),r2
@@ -3372,9 +3381,9 @@ L208_LF3:
 	nop; not filled.
 	addi	r29,r29,#8
 	snei	r1,r1,#0
-	beqz	r1,L209_LF3
+	beqz	r1,L211_LF3
 	nop; not filled.
-L210_LF3:
+L212_LF3:
 	addi	r29,r29,#-24
 	lhi	r7,((LC10_LF3)>>16)&0xffff
 	addui	r7,r7,(LC10_LF3)&0xffff
@@ -3386,9 +3395,9 @@ L210_LF3:
 	jal	_printf
 	nop; not filled.
 	addi	r29,r29,#24
-L209_LF3:
-	add	r1,r0,r4
 L211_LF3:
+	add	r1,r0,r4
+L213_LF3:
 	lw	r2,0(r29)
 	lw	r3,4(r29)
 	lw	r4,8(r29)
